@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">"sans-serif-condensed"</item>
+    </style>
+
+    <style name="AppTheme.QrText">
+        <item name="android:fontFamily">"sans-serif"</item>
+        <item name="android:textColor">@color/colorForeground</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="AppTheme.ButtonAction">
+        <item name="android:layout_marginRight">@dimen/action_button_margin_horizontal</item>
+        <item name="android:layout_marginLeft">@dimen/action_button_margin_horizontal</item>
+        <item name="android:paddingTop">18dp</item>
+        <item name="android:paddingBottom">18dp</item>
+        <item name="android:background">@drawable/bg_button_action</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+</resources>
