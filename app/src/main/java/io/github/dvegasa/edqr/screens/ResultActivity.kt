@@ -11,7 +11,10 @@ import android.text.style.StyleSpan
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import io.github.dvegasa.edqr.*
+import io.github.dvegasa.edqr.ActionHandler
+import io.github.dvegasa.edqr.InMemoryStorage
+import io.github.dvegasa.edqr.R
+import io.github.dvegasa.edqr.ResultTranscriptor
 import kotlinx.android.synthetic.main.activity_result.*
 
 class ResultActivity : AppCompatActivity() {
@@ -36,9 +39,7 @@ class ResultActivity : AppCompatActivity() {
             finish()
         } else {
             qrTranscriptor = ResultTranscriptor(qrRawResult)
-            actionHandler = ActionHandler(
-                qrTranscriptor?.getType() ?: QrType.TEXT
-            )
+            actionHandler = ActionHandler(this, qrRawResult)
         }
     }
 
