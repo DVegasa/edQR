@@ -35,8 +35,13 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     }
 
     override fun handleResult(rawResult: Result?) {
-        showResult(rawResult)
         qrScanner.stopCamera()
+        saveResult(rawResult)
+        showResult(rawResult)
+    }
+
+    private fun saveResult(rawResult: Result?) {
+        InMemoryStorage.qrResult = rawResult
     }
 
     private fun showResult(rawResult: Result?) {
@@ -45,7 +50,7 @@ class MainActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             return
         }
 
-        val intent = ResultActivity.getIntent(this, rawResult)
+        val intent = ResultActivity.getIntent(this)
         startActivity(intent)
     }
 }

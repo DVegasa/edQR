@@ -8,42 +8,56 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.View
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.zxing.Result
 import com.google.zxing.client.result.ResultParser
 import kotlinx.android.synthetic.main.activity_result.*
 
-private const val ARG_QR_TEXT = "qrText"
-private const val ARG_QR_TYPE = "qrType"
-
 class ResultActivity : AppCompatActivity() {
+
+    private var qrRawResult: Result? = null
 
     private var qrText: String? = null
     private var qrType: String? = null
 
+    private var actionHandler: ActionHandler? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
-        qrText = intent.extras?.getString(ARG_QR_TEXT)
-        qrType = intent.extras?.getString(ARG_QR_TYPE)
 
-        Log.d("ed__", "$qrText;$qrType")
+        loadResult()
+        showResult()
+    }
 
+    private fun loadResult() {
+        qrRawResult = InMemoryStorage.qrResult
+        if (qrRawResult == null) {
+            showLoadingError()
+            finish()
+        } else {
+            qrText = qrRawResult?.text
+            qrType = ResultParser.parseResult(qrRawResult).type.toString()
+            actionHandler = ActionHandler(qrRawResult!!)
+        }
+    }
+
+    private fun showLoadingError() {
+        Toast.makeText(this, "Scanning error", Toast.LENGTH_LONG).show()
+        Exception("Scanning error").printStackTrace()
+    }
+
+    private fun showResult() {
         initTvBody(qrText ?: "")
-        initTypeText(tvType, qrType ?: "")
+        initTypeText(qrType ?: "")
         initActionButton()
         initCopyButton()
         initShareButton()
     }
 
-    private fun initTvBody(qrText: String) {
-        tvQrBody.setText(qrText)
-    }
-
-    private fun initTypeText(tvType: TextView, qrType: String) {
+    private fun initTypeText(qrType: String) {
         if (typeToString(qrType).isEmpty()) {
             tvType.visibility = View.GONE
             return
@@ -56,6 +70,10 @@ class ResultActivity : AppCompatActivity() {
         tvType.setText(spannableString)
     }
 
+    private fun initTvBody(qrText: String) {
+        tvQrBody.setText(qrText)
+    }
+
     private fun initActionButton() {
         if (typeToString(qrType ?: "").isEmpty()) {
             btnAction.visibility = View.INVISIBLE
@@ -64,7 +82,11 @@ class ResultActivity : AppCompatActivity() {
         }
 
         btnAction.setText(typeToActionButtonText(qrType ?: ""))
+        btnAction.setOnClickListener {
+            actionHandler?.doAction()
+        }
     }
+
 
     private fun initCopyButton() {
         btnCopy.setOnClickListener {
@@ -129,15 +151,8 @@ class ResultActivity : AppCompatActivity() {
 
     companion object {
         @JvmStatic
-        fun getIntent(context: Context, result: Result): Intent {
-            val parsed = ResultParser.parseResult(result)
-
-            Log.d("ed__", "${result.text};${parsed.type}")
-
-            val intent = Intent(context, ResultActivity::class.java)
-            intent.putExtra(ARG_QR_TEXT, result.text)
-            intent.putExtra(ARG_QR_TYPE, parsed.type.name)
-            return intent
+        fun getIntent(context: Context): Intent {
+            return Intent(context, ResultActivity::class.java)
         }
     }
 }
