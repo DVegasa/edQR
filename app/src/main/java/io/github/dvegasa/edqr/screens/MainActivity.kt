@@ -1,9 +1,11 @@
-package io.github.dvegasa.edqr
+package io.github.dvegasa.edqr.screens
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.zxing.Result
+import io.github.dvegasa.edqr.InMemoryStorage
+import io.github.dvegasa.edqr.R
 import kotlinx.android.synthetic.main.activity_main.*
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 

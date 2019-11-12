@@ -1,29 +1,21 @@
 package io.github.dvegasa.edqr
 
-import com.google.zxing.Result
-import com.google.zxing.client.result.ResultParser
-
 /**
  * 12.11.2019
  */
-class ActionHandler(private val qrRawResult: Result) {
-    private val parsedResult = ResultParser.parseResult(qrRawResult)
+class ActionHandler(val qrType: QrType) {
 
     fun doAction() {
-        when (parsedResult.type.toString()) {
-            "ADDRESSBOOK" -> addAddressBook()
-            "EMAIL_ADDRESS" -> emailTo()
-            "PRODUCT" -> null
-            "URI" -> openUri()
-            "TEXT" -> null
-            "GEO" -> openMap()
-            "TEL" -> addTel()
-            "SMS" -> sendSms()
-            "CALENDAR" -> addToCalendar()
-            "WIFI" -> connectWifi()
-            "ISBN" -> null
-            "VIN" -> null
-            else -> null
+        when (qrType) {
+            QrType.BUSINESS_CARD -> addAddressBook()
+            QrType.EMAIL -> emailTo()
+            QrType.TEXT -> null
+            QrType.URI -> openUri()
+            QrType.GEO -> openMap()
+            QrType.TEL -> addTel()
+            QrType.SMS -> sendSms()
+            QrType.CALENDAR_EVENT -> addToCalendar()
+            QrType.WIFI -> connectWifi()
         }
     }
 
