@@ -8,15 +8,26 @@ import com.google.zxing.client.result.ResultParser
  */
 
 enum class QrType {
-    BUSINESS_CARD, EMAIL, URI, TEXT, GEO, TEL, SMS, CALENDAR_EVENT, WIFI
+    BUSINESS_CARD, EMAIL, URI, TEXT, GEO, TEL, SMS, CALENDAR_EVENT, WIFI, DEVELOPER
 }
 
 class ResultTranscriptor(val rawResult: Result) {
 
     fun getText() = rawResult.text.toString()
 
-    fun getType() =
-        when (ResultParser.parseResult(rawResult).type.toString()) {
+    fun getType(): QrType {
+        val text = rawResult.text.toString().toLowerCase()
+        if (text == "dvegasa" ||
+            text == "eduard khalturin" ||
+            text == "ed khalturin" ||
+            text == "draconvegasa" ||
+            text == "эд халтурин" ||
+            text == "эдуард халтурин"
+        ) {
+            return QrType.DEVELOPER
+        }
+
+        return when (ResultParser.parseResult(rawResult).type.toString()) {
             "ADDRESSBOOK" -> QrType.BUSINESS_CARD
             "EMAIL_ADDRESS" -> QrType.EMAIL
             "PRODUCT" -> QrType.TEXT
@@ -31,6 +42,7 @@ class ResultTranscriptor(val rawResult: Result) {
             "VIN" -> QrType.TEXT
             else -> QrType.TEXT
         }
+    }
 
     fun getTypeHint() =
         when (getType()) {
@@ -43,6 +55,7 @@ class ResultTranscriptor(val rawResult: Result) {
             QrType.SMS -> "SMS"
             QrType.CALENDAR_EVENT -> "calendar event"
             QrType.WIFI -> "Wi-Fi connection"
+            QrType.DEVELOPER -> "developer of this app"
         }
 
     fun getActionHint() =
@@ -56,6 +69,7 @@ class ResultTranscriptor(val rawResult: Result) {
             QrType.SMS -> "SEND"
             QrType.CALENDAR_EVENT -> "ADD"
             QrType.WIFI -> "CONNECT"
+            QrType.DEVELOPER -> ""
         }
 }
 
